@@ -1,0 +1,186 @@
+ get-childitem
+ Get-Process
+  Get-Service
+  Get-EventLog -LogName System
+
+  Get-EventLog -LogName System -Newest 10
+
+  Get-Location
+Get-LocalUser
+
+
+ Set-Date -Date "2025-09-01"
+
+ Set-Date -Date "2025-09-01 12:47AM"
+ 
+Set-Variable -name city -value "Melbourne"
+
+$PSVersionTable
+
+ Set-Service -name dhcp -StartupType Disable
+
+ get-help Set-Service -examples
+  Start-Service -name 
+
+  Stop-Service -name
+
+  Set-Content -path "C:\users\admin10\1.txt" -Value "xyz"
+
+  Get-Content -path "C:\users\admin10\1.txt"
+
+
+  New-Item -path  "C:\users\admin10\2.txt"  -ItemType File
+
+
+remove-item "C:\users\admin10\2.txt"
+
+stop-process -name notepad
+   
+get-help Set-Service -examples
+
+
+get-command *ipv4*
+
+
+$Env:PSModulePath
+
+
+
+Install-Module -Name PowerShellGet -Force
+
+ Install-Module -Name Az -Repository PSGallery -Force
+
+ import-module Az
+  import-module dnsclient
+  import-module netsecurity
+
+ get-module -listavailable -name Az*
+
+
+ find-command get-process
+
+
+ dir
+
+ cd set-location 
+
+ mkdir new-item
+
+ get-content  -path "C:\users\admin10\1.txt"
+
+ remote-item del
+
+ cls clear-host
+  set-alias GP1  get-process  -force
+
+   remove-item alias:GP1
+
+   Get-Alias
+
+   rename-computer -NewName "DC1" -Restart
+
+ Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools 
+
+Install-ADDSForest -DomainName logitrain.local -ForestMode Win2012 -DomainMode Win2012 -InstallDns:$true -SafeModeAdministratorPassword (ConvertTo-SecureString "L@gi12341234" -AsPlainText -force)
+
+
+
+New-ADOrganizationalUnit -name IT 
+
+New-ADOrganizationalUnit -name IT -path "DC=logitrain,DC=local"
+
+New-aduser -name "Dave John" -GivenName "Dave" -Surname "John" -SamAccountName "DaveJohn" -UserPrincipalName "DJ@logitrain.local" 
+-Enabled $true -AccountPassword (ConvertTo-SecureString "L@gi12341234" -AsPlainText -force) -path "OU=IT,DC=logitrain,DC=local"]
+
+ New-ADGroup -name support -GroupCategory Security -GroupScope Global -Path "OU=IT,DC=logitrain,DC=local"
+
+
+
+ Set-ADAccountPassword -Identity "DaveJohn"  -NewPassword (ConvertTo-SecureString "L@gi12341234" -AsPlainText -force) -reset
+
+
+
+  Get-Aduser -Filter * | select-object SamAccountName
+
+
+   Get-Aduser -Filter *
+
+    Get-Aduser -Filter * | Select-Object samaccountname,Givenname, enabled
+
+
+
+   
+  Get-Aduser -Filter * -Searchbase "OU=IT,DC=logitrain,DC=local" | select-object name
+
+
+  Get-Adgroupmember -Identity "Support"
+
+  Add-ADGroupMember -Identity "support" -Members "DaveJohn"
+
+  Get-Adgroupmember -Identity "Support"
+
+   new-Adcomputer -name "PC01" -path "OU=IT,DC=logitrain,DC=local" -enabled $true
+
+
+    set-adcomputer -Identity "PC01" -Description "IT dept"
+
+
+    get-adcomputer -Identity "PC01"
+
+
+    get-adcomputer -Identity "PC01" -Properties * 
+
+
+
+    Get-ADOrganizationalUnit -Filter *
+
+
+
+    Get-Dnsclient 
+    Get-Dnsclientserveraddress
+    Set-NetFirewallProfile -profile domain,private, public -enabled false
+
+
+
+     New-NetFirewallRule -name httpallow -Direction inbound -Protocol tcp -LocalPort 80 -Action Allow
+     Get-NetFirewallRule 
+
+      Get-NetFirewallRule  -DisplayName "httpallow"
+
+       Get-NetFirewallRule -Action Allow 
+
+
+      Set-NetFirewallRule -DisplayName "httpallow" -Enabled
+
+      Enable-NetFirewallRule -DisplayName "httpallow"
+      Disable-NetFirewallRule -DisplayName "httpallow"
+
+
+
+      New-GPO -Name "dontchangetheme"
+       New-GPLink -name "dontchangetheme" -target "OU=IT,DC=logitrain,DC=local"
+       Set-GPRegistryValue -Name "dontchangetheme" -Key "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -ValueName "noDispCPL"  -Type DWord -Value 1
+        gpupdate /force
+    gpresult /r
+
+    New-VM -Name "VM2" -MemoryStartupBytes 2GB -Generation 2 -Path "D:\VMs"
+
+Start-VM -Name "VM1"
+
+Stop-VM -Name "VM1" -Force
+
+Restart-VM -Name "VM1"
+
+Suspend-VM -Name "VM2"
+
+Resume-VM -Name "VM2"
+
+Import-VM -Path "D:\VMs\VM2\VM2.xml"
+
+Export-VM -Name "VM2" -Path "D:\VMExports"
+
+
+
+
+
+
