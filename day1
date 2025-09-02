@@ -180,7 +180,196 @@ Import-VM -Path "D:\VMs\VM2\VM2.xml"
 Export-VM -Name "VM2" -Path "D:\VMExports"
 
 
+ Install-WindowsFeature -name Web-server -IncludeManagementTools
+
+get-windowsfeature
+
+
+
+get-computerinfo | select-object  Osname
 
 
 
 
+
+ $info = get-computerinfo
+
+write-host "--------system information------------"
+
+Write-Host "OS Name : $($info.OsName)"
+
+Write-Host "OS Status :$($info.OSstatus)"
+
+
+
+ Get-EventLog -LogName Security -Newest 10
+
+
+ Clear-EventLog -LogName system
+
+  Get-EventLog -LogName System -Newest 10
+
+
+
+
+
+$Acl = Get-Acl -Path "C:\test"  
+
+  $permission = "logitrain.local\admin10","FullControl","Allow"
+
+  $accessrule = New-Object System.Security.AccessControl.FileSystemAccessRule $permission
+
+  $Acl.SetAccessRule($accessrule)
+
+  set-acl -Path "C:\test" -AclObject $Acl
+
+
+ get-service | Where-Object {$_.status -eq "Running"}
+
+ get-process | Where-Object {$_.WorkingSet -gt 100MB}
+
+ get-process | Where-Object {$_.WorkingSet -gt 100MB} | Select-Object ProcessName, ID, CPU
+
+ Get-ChildItem "C:/" | Where-Object {-not $_.VersionInfo}  | Get-Member
+
+ Get-ChildItem "C:/" | Where-Object {$_.Extension -eq ".txt"}
+
+  Get-ChildItem "C:/" | Where-Object {$_.Extension -eq ".exe" -or $_.length -le 10MB } 
+
+    Get-ChildItem "C:/" | Where-Object {$_.name -eq ".exe"  } 
+
+    Get-ChildItem "C:/" | Where-Object {$_.name -notlike "*.*"  }
+
+    Get-ChildItem "C:/" | Where-Object {$_.Attributes -match "Hidden"  }
+
+
+    get-service | format-list 
+
+        get-service | format-list -Property displayname, status
+
+
+        get-aduser | format-list -Property name, sid
+
+         get-aduser -Filter * | Where-Object {$env:USERDOMAIN_ROAMINGPROFILE} | get-member
+
+          Get-ADuser -Filter * -Properties Name | ft -Property Name
+
+          Get-ADuser -Filter * -Properties Name | ft -Property Name,surname
+
+          Get-ADComputer -Filter * -Properties OperatingSystem | ft -Property Name, OperatingSystem
+
+
+          Get-ADComputer -Filter * | ft -Property Name, OperatingSystem
+
+          Get-ADuser -Filter * -Properties Name | ft -Property Name,surname,EmailAddress, enabled
+
+
+          get-service  | sort-object Name -Descending
+
+
+          get-process | Sort-Object CPU -Descending | Select-Object -first 10
+
+
+          get-service  | Group-Object Status  
+          
+          
+          get-service  | Group-Object ServiceType   
+          
+           140 Get-ChildItem C:/  | sortobject   
+                                                                                                    
+          Get-ChildItem C:/  | Sort-Object                                                                                           
+          
+          Get-ChildItem C:/  | Sort-Object -Descending                                                                               
+          
+          Get-ChildItem C:/  | Sort-Object Size -Descending                                                                          
+   
+
+   get-process | Sort-Object -Property processname
+
+
+   Get-ChildItem C:/ | Measure-Object
+
+   Get-ChildItem C:/ | Measure-Object -Property Length -Maximum
+
+
+   Get-ChildItem C:/ | Measure-Object -Property Length -Maximum
+
+   Get-ChildItem C:/ | Measure-Object -Property Length -Minimum
+
+   Get-ChildItem C:/ | Measure-Object -Property length -Sum -Maximum -Minimum -Average
+
+
+   get-date | Select-Object -Property DayOfYear
+
+
+   get-date | Select-Object -Property Hour
+
+
+   Get-EventLog –Newest 10 –LogName Security | Select-Object –Property EventID,TimeWritten,Message
+
+
+
+   Get-Volume | Select-Object -Property DriveLetter,
+
+@{n='Size(GB)'; e={ '{0:N5}' -f ($PSItem.Size / 1MB) }},
+
+@{n='FreeSpace(GB)'; e={ '{0:N3}' -f ($PSItem.SizeRemaining / 1MB) }}
+
+
+
+Get-Service | Where Status –eq Running
+
+Get-Process | Where CPU –gt 20
+
+
+Get-Service | Where-Object –Filter {$PSItem.Status -like "*Run*"}
+
+
+Get-service | Where { $_.Status -eq "Running"}
+
+
+Get-service | ? { $_.Status -eq "Running"}
+
+Get-Volume | Where-Object –Filter{ $PSItem.HealthStatus –ne 'Healthy'-or
+  $PSItem.SizeRemaining –lt 100MB
+}
+
+
+Get-ChildItem "C:/" | Where-Object {$_.Extension -eq ".exe" -or $_.length -le 10MB }
+
+
+
+New-EventLog -LogName Application -Source "MyPSAlerts"
+
+
+Get-Volume | Where-Object {
+    $_.HealthStatus -ne 'Healthy' -or $_.SizeRemaining -lt 100MB
+} | ForEach-Object {
+    Write-EventLog -LogName Application `
+                   -Source "PSAlerts" `
+                   -EntryType Warning `
+                   -EventId 2001 `
+                   -Message "DriveAlert: $($_.DriveLetter)"
+
+
+
+
+ get-service | foreach Name  
+
+ Get-Service   
+
+ Get-EventLog -list 
+
+ Get-EventLog -list | where log -in @("System","Application") 
+
+ get-process > C:1.txt
+
+
+  get-process >> C:1.txt
+
+  get-process | ConvertTo-Json | out-file C:\2.json
+
+
+  get-process | ConvertTo-html | out-file C:\2.json
+
+  get-aduser -filter * -Properties Name,Enabled | select-object Name, SiD, Enabled | ConvertTo-html -Title "AD Users" 
