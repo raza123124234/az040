@@ -373,3 +373,268 @@ Get-Volume | Where-Object {
   get-process | ConvertTo-html | out-file C:\2.json
 
   get-aduser -filter * -Properties Name,Enabled | select-object Name, SiD, Enabled | ConvertTo-html -Title "AD Users" 
+
+
+
+  Get-PSProvider                                                                                                                  
+   2 import-module ActiveDirectory                                                                                                   
+   3 Get-PSProvider                                                                                                                  
+   4 Get-Help about_FileSystem_Provider                                                                                              
+   5 Import-Module DnsServer                                                                                                         
+   6 Get-PSProvider                                                                                                                  
+   7 Get-Module -ListAvailable                                                                                                       
+
+
+   Get-Command *-Item,*-ItemProperty
+
+   Get-Item -Path "HKLM:\SYSTEM"
+
+
+   Get-ChildItem Alias:
+
+   New-Item -path Alias:np -Value "Notepad.exe"
+
+   Remove-Item Alias:np
+
+
+   Get-ChildItem Alias:
+
+   New-Item -Path Env:xyzvar -value xyz
+
+   remove-item Env:windir
+
+
+   New-Item -Path C:\powershellfolder -ItemType Directory 
+
+   New-Item -Path C:\powershellfolder\file1.txt -ItemType File
+
+   set-content -path  C:\powershellfolder\file1.txt -Value "lsmmdclndslcn"
+
+   get-content -path  C:\powershellfolder\file1.txt 
+
+   remote-item -path  C:\powershellfolder\file1.txt
+
+
+
+   Function hello  { Write-Output "hello" }                                                                                        
+   hello                                                                                                                           
+  new-item function: abc                                                                                                          
+  new-item -path function:\abc -value {"abc"}                                                                                     
+
+
+  Get-ChildItem Function:
+
+   Function hello  { Write-Output "hello" }
+
+   remote-item Function: hello
+
+
+
+
+   Get-ChildItem variable:
+
+   Get-Variable
+
+    Set-Variable x -Value "logitrain"
+
+     Get-Variable x
+
+
+     New-Item -Path HKCU:\Software\ -name demovalue -Value "123" 
+
+     New-ItemProperty -Path HKCU:\Software -name "demovalue" -Value "1234" -PropertyType string
+
+      Copy-Item -Path C:\1.txt -Destination C:\2.txt
+
+      Clear-Content
+
+       Copy-Item -Path HKCU:\Software\demovalue -Destination HKCU:\Software\demovalue2
+
+      Move-Item -Path HKCU:\Software\demovalue -Destination HKCU:\Software\demovalue2
+
+      rename-item -Path C:\1.txt -newname C:\2.txt
+
+      rename-item -Path HKCU:\Software\demovalue -newname HKCU:\Software\demo1value2
+
+       Invoke-item -Path C:\1.txt
+
+       notepad.exe  C:\1.txt   
+
+
+        Get-CimInstance -ClassName Win32_Account
+
+
+        
+        Get-CimInstance -ClassName Win32_Account -ComputerName vm2
+
+        Get-CimInstance -ClassName Win32_OperatingSystem
+
+         Get-CimInstance -ClassName Win32_OperatingSystem | Select CSName,version,OperatingSystemSKU,BuildType
+
+          $session = New-CimSession -ComputerName vm2 
+
+          Get-CimInstance -ClassName Win32_Account -ComputerName  $session
+
+
+           Get-CimInstance -ClassName Win32_OperatingSystem -Namespace 
+
+
+           Get-CimInstance -ClassName Win32_OperatingSystem -Namespace root/InventoryLogging wrong
+
+
+
+           Get-CimClass -Namespace root/CIMV2 | select-object cimclassname
+
+
+           Get-CimInstance -ClassName Win32_BIOS | Select-Object -Property Name, SoftwareElementID, SoftwareElementState, TargetOperatingSystem, BIOSVersion
+
+           Get-WmiObject -Namespace root -List -Recurse | Select -Unique __NAMESPACE
+
+           Get-WmiObject -Namespace root\CIMv2 -List
+
+           Get-CimClass -Namespace root\CIMv2
+
+
+            Get-CimClass  *network*
+
+
+            Get-CimInstance -ClassName Win32_BIOS
+
+            Get-WmiObject -Class Win32_LogicalDisk
+
+
+            Get-CimInstance -ClassName Win32_Process 
+
+            Get-CimInstance -ClassName Win32_LogicalDisk -Filter "DriveType=3" 
+
+
+            Get-CimClass -Class Win32_Service | Select-Object -ExpandProperty CimClassMethods
+
+             Get-CimInstance -Query "SELECT * FROM Win32_NetworkAdapter"
+
+             $username = "abcd"
+             $email = "$username@company.com"
+
+              $date = (get-date).AddDays(15)
+
+              $process = get-process -name cmd
+
+              $num1 = 5
+$logFile = “C:\Logs\Log.txt”
+$user = Get-ADUser Administrator
+$service = Get-Service W32Time
+
+
+[int32]$num1 = 100
+
+[double]$num1 = 100.10
+
+[datetime]$num1 = get-date
+
+[bool]$Active = $true
+
+
+[bool]$disable = $false
+
+
+
+
+$service = Get-Service W32Time 
+To display the value of $service, enter the following command, and then select Enter:
+$service 
+To display $logFile as part of a text message on screen, enter the following command, and then select Enter:
+Write-Host "The log file location is $logFile" 
+To review all of the properties of the service object stored in $service, enter the following command, and then select Enter:
+$service | Format-List * 
+To review the Status property of $service, enter the following command, and then select Enter:
+$service.status 
+To review the Name and Status properties of $service, enter the following command, and then select Enter:
+$service | Format-Table Name,Status 
+
+$text = "Powershell"
+$text.length
+$text.Contains("shell")
+ $text.ToLower()
+
+ $text.Split("")
+
+
+  $machines = "vm1","vm2","vm3"
+
+  $machines[0]
+
+  $machines[1]
+
+  $machines[2]
+
+   $machines[2] = "virtualpc3"
+
+
+   $servers = @("8.8.8.8","1.1.1.1","8.8.3.4")
+
+foreach ($ip in $Servers) {
+        Write-Output "pinging $ip"
+        Test-Connection -ComputerName $ip -count 2 -quiet
+        
+        }
+
+
+
+
+
+        $targets = @(
+        @{host="google.com";port= 80},
+        @{host="google.com";port= 443}
+        )
+
+        
+foreach ($t in $targets) {
+        Write-Output "pinging $t.host"
+        Test-netConnection -ComputerName $t.host -Port $t.port
+        
+        }
+
+
+
+        $host1 = Read-Host "Enter hostname or IP"
+$port1 = Read-Host "Enter port number"
+
+ $result = Test-netConnection -ComputerName $host1 -Port $port1
+
+ if ($result.TcpTestSucceeded) {
+    Write-Output " open"
+    }
+    else 
+    {
+    Write-Output "closed"
+    } 
+
+
+
+ write-host "select an action"
+
+write-host "1 - check service status"
+write-host "2 - start service"
+write-host "3 - stop service"
+write-host "4 - exit"
+
+$choice = read-host "enter your choice (1 to 4)"
+if ($choice -in 1,2,3){
+       $servicename = read-host "enter the service name for exampler spooler chrome"
+      }
+
+Switch($choice){
+    "1"
+    {
+       get-service -name $servicename 
+       } 
+       
+       }
+
+Switch($choice){
+    "2"
+    {
+       start-service -name $servicename 
+       } 
+       
+       }
