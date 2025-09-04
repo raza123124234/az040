@@ -638,3 +638,328 @@ Switch($choice){
        } 
        
        }
+
+
+
+       $sourceFolder ="C:\test"
+
+       $backupFolder ="C:\backup"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+    
+          $sourceFolder ="C:\test\*"
+
+       $backupFolder ="C:\backup"
+
+     
+
+
+       if ( -not  (Test-Path $backupFolder))
+       {
+       New-Item -ItemType Directory -Path $backupFolder
+       }
+
+
+      do{
+      $files =  @(Get-ChildItem  -Path $sourceFolder -File)
+
+      if($files.Count -gt 0){
+
+
+
+      
+
+       foreach($file in $files){
+
+
+
+      Move-Item -Path $sourceFolder -Destination $backupFolder -Force
+        Write-Output  "moved $($file.Name)"
+
+       }
+       }
+       }
+       
+        while ($files.Count -gt 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Continue stops processing the current iteration of a loop:
+
+
+ForEach ($user in $users) {     If ($user.Name -eq “Administrator”) {Continue}     Write-Host “Modify user object”}
+Break completely stops loop processing:
+ForEach ($user in $users) {     $number++     Write-Host “Modify User object $number”     If ($number -ge $max) {Break}}
+
+
+
+Get-Content retrieves content from a text file.
+Each line in the file becomes an item in an array:
+
+$computers = Get-Content "C:\Scripts\computers.txt" 
+
+Import multiple files by using wildcards:
+
+Get-Content -Path "C:\Scripts\*" -Include "*.txt","*.log"
+
+Limit the data retrieved by using the -TotalCount and -Tail parameters.
+
+
+
+$computers = Get-Content "C:\Scripts\computers.txt" -tail 100
+
+
+
+
+The first row in the CSV file is a header row.
+Each line in the CSV file becomes an array item.
+The header row defines the property names for the items:
+
+
+$users = Import-Csv C:\Scripts\Users.csv
+
+You can specify a custom delimiter by using the -Delimiter parameter.
+
+You can specify a missing header row by using the -Header parameter.
+
+
+
+
+
+XML can store more complex data than CSV files.
+Import-Clixml creates an array of objects:
+$users = Import-Clixml C:\Scripts\Users.xml
+Use Get-Member to review object properties.
+Limit the data retrieved by using the -First and -Skip parameters.
+
+
+
+JSON is:
+A lightweight data format similar to XML.
+Commonly used by web services.
+You can convert from JSON, but not import directly.
+$users = Get-Content C:\Scripts\Users.json | ConvertFrom-Json
+Retrieve JSON data directly from web services by using Invoke-RestMethod.
+$users = Invoke-RestMethod "https://hr.adatum.com/api/staff"
+
+
+Invoke-RestMethod "https://microsoftedge.github.io/Demos/json-dummy-data/64KB.json"
+
+
+
+$password = read-host "Enter your password" -
+
+
+$cred = Get-Credential -Message "updating passowrd" -UserName "logitrain.local\Administrator"
+
+Set-ADUser -UserPrincipalName "administrator@logitrain.local" -Credential $cred
+
+
+$selection = $users | Out-GridView -PassThru 
+
+
+ Start-Sleep -Seconds 2
+
+
+
+
+
+ 
+
+param (
+    [string]$Computer = "Server01",
+    [switch]$TestMode
+)
+
+# Enable debug and verbose streams if TestMode is set
+if ($TestMode) {
+    $DebugPreference = "Continue"
+    $VerbosePreference = "Continue"
+}
+
+Write-Verbose "Starting the script. Target computer: $Computer"
+Write-Debug "Debug info: TestMode is $TestMode"
+
+# Example variable to watch
+$Status = "Initializing"
+
+Write-Verbose "Status before processing: $Status"
+Write-Debug "Current computer variable: $Computer"
+
+# Simulate some processing
+$Status = "Processing"
+Write-Verbose "Status updated: $Status"
+Write-Debug "Performing some operation on $Computer"
+
+# Simulate operation
+Start-Sleep -Seconds 2
+
+# Finalize
+$Status = "Completed"
+Write-Verbose "Status after processing: $Status"
+Write-Debug "Script completed for $Computer"
+
+# Example breakpoints you can set in PowerShell
+# 1. Line breakpoint (pause at a specific line)
+# Set-PSBreakPoint -Line 18 -Script "MyScript.ps1"
+
+# 2. Command breakpoint (pause when a specific command is run)
+# Set-PSBreakPoint -Command "Start-Sleep" -Script "MyScript.ps1"
+
+# 3. Variable breakpoint (pause when variable is read or written)
+# Set-PSBreakPoint -Variable "Status" -Mode ReadWrite -Script "MyScript.ps1"
+
+# Example action with a breakpoint
+# Set-PSBreakPoint -Line 20 -Script "MyScript.ps1" -Action {
+#     Write-Host "Breakpoint hit! Current Status: $Status"
+#     $Status = "Paused for review"
+# }
+
+# End of script
+
+
+
+
+$ErrorActionPreference defines what happens for non-terminating errors:
+Continue
+SilentlyContinue
+Inquire
+Stop
+It’s preferred to modify the error action for individual commands rather than globally:
+Get-WmiObject -Class Win32_BIOS -ComputerName LON-SVR1,LON-DC1 -ErrorAction Stop
+Set the error action globally when it can’t be done at the command:
+For example, using methods on an object
+
+
+
+
+
+
+
+function Fun1 {
+    param(
+    $name = "dfvdfv"
+    
+    )
+
+    Write-Output "$name"
+
+
+
+}
+
+function add-numbers{
+
+    param(
+    
+           $A,
+           $B
+            )
+
+
+            return $A + $B
+
+
+}
+
+add-numbers -A 10 -B 20 
+
+
+
+Enable-PSRemoting -Force  # enable it on remote pc 
+#run on local server to access remote pc
+
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value "10.1.0.5"
+
+Test-WSMan 10.1.0.5
+
+Enter-PSSession -ComputerName 10.1.0.5  -Credential (Get-Credential)
+
+
+
+
+Invoke-Command
+  -ScriptBlock { 
+    get-service
+     }
+  -ComputerName 10.1.0.5
+  -ArgumentList (Get-Credential),'path'
+
+
+  Invoke-Command -ComputerName 10.1.0.5 -Credential (Get-Credential) -ScriptBlock { Get-Service }
+
+
+  $dc = New-PSSession –ComputerName LON-DC1 -Credential (Get-Credential)
+
+  Disconnect-PSSession –Session $dc
+
+  Get-PSSession –ComputerName 10.1.0.5 -Credential (Get-Credential)
+
+
+  import implicit
+
+  $session = New-PSSession -ComputerName 10.1.0.5 -Credential (Get-Credential)
+  Import-PSSession -Session $session -Module ActiveDirectory
+   Connect-AzAccount 
+   get-azvm
+   Get-AzResourcegroup 
+
+
+
+   You can install the Azure Az PowerShell module by using one of the following methods:
+The Install-Module cmdlet
+Azure PowerShell MSI
+Az PowerShell Docker container
+
+To install the Az module, run the following command:
+	Install-Module -Name Az -Scope CurrentUser -Repository PSGallery –Force
+
+To sign in to Azure from Azure PowerShell, run the following command:
+	Connect-AzAccount
+
+
+Automatic migration is the recommended option for migrating from AzureRM to the Az PowerShell module.
+Install the AzureRM to Az migration toolkit by using the following command:
+	Install-Module -Name Az.Tools.Migration
+
+To install Azure Active Directory Module for Windows PowerShell, use the following command:
+	Install-Module MSOnline
+To install Azure Active Directory PowerShell for Graph, use the following command:
+	Install-Module AzureAD or Install-module AzureADPreview
+
+
+
+
+new-azvm -ResourceGroupName az040 -Name 'PC1-vm' -Location 'Australia East' -Image Win2016Datacenter -VirtualNetworkName  admin10-vnet 
+-SubnetName default -SecurityGroupName admin10-nsg 
+
