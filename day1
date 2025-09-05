@@ -963,3 +963,336 @@ To install Azure Active Directory PowerShell for Graph, use the following comman
 new-azvm -ResourceGroupName az040 -Name 'PC1-vm' -Location 'Australia East' -Image Win2016Datacenter -VirtualNetworkName  admin10-vnet 
 -SubnetName default -SecurityGroupName admin10-nsg 
 
+
+
+ New-AzStorageAccount -ResourceGroupName az040 -name logitrainstorage123 -location 'australia east' -kind storagev2 -SkuName Standard_LRS -MinimumTlsVersion TLS1_2
+
+
+ New-AzADuser -DisplayName 'dave' -GivenName 'dave' -Surname "john" -UserPrincipalName 'd@logitrain9999outlook.onmicrosoft.com' -UsageLocation 'Au'  -AccountEnabled $true
+
+
+  Get-AzADUser -ObjectId 'd@logitrain9999outlook.onmicrosoft.com'
+
+
+  set-AzADUser -ObjectId 'd@logitrain9999outlook.onmicrosoft.com' -Department 'administrators'
+
+
+  remove-AzADUser -ObjectId 'd@logitrain9999outlook.onmicrosoft.com'
+
+
+  get-azadgroup
+
+
+
+  $UserPassword=New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
+$UserPassword.Password="Pa55w.rd"
+New-AzureADUser -DisplayName "Abbie Parsons" -GivenName "Abbie" -SurName "Parsons" -UserPrincipalName AbbieP@adatum.com -UsageLocation US -PasswordProfile $UserPassword -AccountEnabled $true -MailNickName 'abbie
+'
+
+Get-AzureADUser -ObjectId AbbieP@adatum.com
+
+
+Get-AzureADUser -All $true
+
+
+New-MsolUser -DisplayName "Abbie Parsons" -FirstName "Abbie" -LastName "Parsons" -UserPrincipalName AbbieP@adatum.com -Password "Pa55w.rd"
+
+Get-MsolUser -UserPrincipalName AbbieP@adatum.com''
+
+
+Get-MsolUser -All
+ 
+
+ New-AzureADGroup -DisplayName "Marketing Group" -MailNickname MarketingGrp
+
+
+ $roleTemplate = Get-AzureADDirectoryRoleTemplate | Where {$_.displayName -eq 'User Administrator'}
+Enable-AzureADDirectoryRole -RoleTemplateId $roleTemplate.ObjectId
+
+
+$user = Get-AzureADUser -ObjectID AbbieP@adatum.com
+$role = Get-AzureADDirectoryRole | Where {$_.displayName -eq 'User Administrator'}
+Add-AzureADDirectoryRoleMember -ObjectId $role.ObjectId -RefObjectId $user.ObjectID
+
+
+Add-MsolRoleMember -RoleMemberEmailAddress AbbieP@adatum.com -RoleName 'User Administrator'
+
+ Get-AzureADSubscribedSku
+
+
+$License = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+$License.SkuId = '05e9a617-0261-4cee-bb44-138d3ef5d965'
+$LicensesToAssign = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+$LicensesToAssign.AddLicenses = $License
+Set-AzureADUserLicense -ObjectId AbbieP@adatum.com -AssignedLicenses $LicensesToAssign
+
+
+$License.DisabledPlans = '7547a3fe-08ee-4ccb-b430-5077c5041653'
+$License.DisabledPlans.Add('a23b959c-7ce8-4e57-9140-b90eb88a9e97')
+
+
+$License = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+$License.SkuId = '05e9a617-0261-4cee-bb44-138d3ef5d965'
+$LicensesToAssign = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+$LicensesToAssign.RemoveLicenses = $License
+Set-AzureADUserLicense -ObjectId AbbieP@adatum.com -AssignedLicenses $LicensesToAssign
+
+
+
+To review available licenses by using AzureAD:
+Get-AzureADSubscribedSku | Select-Object -Property Sku*,ConsumedUnits -ExpandProperty PrepaidUnits
+To assign licenses to a user by using AzureAD:
+$License = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+$License.SkuId = '05e9a617-0261-4cee-bb44-138d3ef5d965'
+$LicensesToAssign = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+$LicensesToAssign.AddLicenses = $License
+Set-AzureADUserLicense -ObjectId AbbieP@adatum.com -AssignedLicenses $LicensesToAssign
+To disable specific service plans by using AzureAD:
+$License.DisabledPlans = '7547a3fe-08ee-4ccb-b430-5077c5041653'
+$License.DisabledPlans.Add('a23b959c-7ce8-4e57-9140-b90eb88a9e97')
+
+\\\To install the Exchange Online module:
+Install-Module -Name ExchangeOnlineManagement
+Scripts must be enabled
+Basic authentication must be allowed for the WinRM client
+To connect to Exchange Online:
+
+
+$ProxyOptions = New-PSSessionOption -ProxyAccessType IEConfig
+Connect-ExchangeOnline -PsSessionOption $ProxyOptions
+
+
+
+Example: Create a shared mailbox
+New-Mailbox -Shared -Name "Marketing Team" -DisplayName "Marketing Team" -Alias "MarketingTeam"
+
+Forwarding emails to another mailbox while retaining copies in the original mailbox:
+"DoraM@adatum.com" `
+    -DeliverToSet-Mailbox -Identity "AbbieP@adatum.com" `
+    -ForwardingSmtpAddress MailboxAndForward $true
+-ForwardingSmtpAddress → address to forward emails to.
+-DeliverToMailboxAndForward $true → keeps a copy in the original mailbox.
+
+
+
+
+Get-EXOMailbox -Identity "AbbieP@adatum.com" | Format-List *
+
+
+
+Mailbox Permissions (full access, send-as, send-on-behalf):
+# Grant full access to another user
+Add-MailboxPermission -Identity "AbbieP@adatum.com" -User "DoraM@adatum.com" -AccessRights FullAccess -InheritanceType All
+
+
+2. Assign a Delegate to a Resource Mailbox
+# Assign AbbieP@adatum.com as a delegate for the BoardRoom resource mailbox
+Set-CalendarProcessing -Identity "BoardRoom" -ResourceDelegates "AbbieP@adatum.com"
+-Identity → the resource mailbox name (e.g., BoardRoom).
+-ResourceDelegates → user(s) who will approve/decline meeting requests.\\\
+
+
+
+
+2. Add a User to an Exchange Online Role
+# Add a user to the Recipient Management role
+Add-RoleGroupMember -Identity "Recipient Management" -Member "AbbieP@adatum.com"
+# -Identity → Name of the role group. -Member → User’s UPN or alias to be added.
+
+
+To install SharePoint Online Management Shell:
+
+Install-Module -Name Microsoft.Online.SharePoint.PowerShell
+To update SharePoint Online Management Shell:
+
+Update-Module -Name Microsoft.Online.SharePoint.PowerShell
+
+To connect to SharePoint Online:
+Connect-SPOService -Url https://yourtenant-admin.sharepoint.com
+
+
+
+
+2. Create a SharePoint Group
+New-SPOSiteGroup `
+    -Group "MarketingUsers" `
+    -PermissionLevels "Read" `
+    -Site "https://adatum.sharepoint.com/sites/Marketing"
+
+
+
+    Add-SPOUser `
+    -Site "https://adatum.sharepoint.com/sites/Marketing" `
+    -Group "MarketingUsers" `
+    -LoginName "AbbieP@adatum.com"
+-LoginName → UPN of the Azure AD user.
+
+
+
+. Create a SharePoint Site
+New-SPOSite `
+    -Url "https://adatum.sharepoint.com/sites/Marketing" `
+    -Owner "AbbieP@adatum.com" `
+    -StorageQuota 256  #MB
+
+
+    Set-SPOSite `
+    -Identity "https://adatum.sharepoint.com/sites/Marketing" `
+    -Title "Marketing Portal"
+
+
+   Review Site Configuration
+Get-SPOSite -Identity "https://adatum.sharepoint.com/sites/Marketing" | Format-List
+
+
+Configure Sharing for a Site
+Set-SPOSite `
+    -Identity "https://adatum.sharepoint.com/sites/Marketing" `
+    -SharingCapability Disabled
+Parameters:
+-Identity → URL of the SharePoint site.
+-SharingCapability → controls how content can be shared.
+
+Valid values for SharingCapability are:
+ExternalUserAndGuestSharing
+ExternalUserSharingOnly
+ExistingExternalUserSharingOnly
+Disabled
+
+Other Parameters Affecting Sharing
+-LockState → Locks the site to prevent edits (Unlock, NoAccess, ReadOnly).
+-SharingDomainRestrictionMode → Restrict sharing to specific domains.
+-DefaultSharingLinkType → Default link type for sharing (Direct, Internal, AnonymousAccess).
+-DefaultLinkPermission → Default permission for shared links (View, Edit).
+-GuestSharingEmailAllowed → Controls if guest invitations can be sent via email.
+
+
+
+Start-Job -ScriptBlock { Dir C:\ -Recurse } -Name LocalDirectory
+Start-Job -FilePath C:\test.ps1 -Name TestScript
+
+
+Invoke-Command -ScriptBlock { Get-EventLog -LogName System -Newest 10 } `
+-ComputerName LON-DC1,LON-CL1,LON-SVR1 -AsJob -JobName RemoteLogs
+
+
+Start-Job -ScriptBlock { Get-CimInstance -ClassName Win32_ComputerSystem }
+
+
+Get-WmiObject -Class Win32_NTEventLogFile -ComputerName localhost,LON-DC1 -AsJob
+
+
+Get-Job –ID <parent_ID> -IncludeChildJobs
+
+List all jobs:
+Get-Job
+Retrieve a specific job by ID:
+Get-Job -Id <JobId>
+Retrieve a specific job by Name:
+Get-Job -Name "<JobName>"
+
+
+
+Working with Child Jobs
+Some jobs, especially remote jobs or CIM/WMI jobs, can spawn child jobs.
+To include child jobs in the output:
+Get-Job -Id <ParentJobId> -IncludeChildJobs
+Child jobs run independently but are linked to the parent job.
+
+Retrieves the output of a completed job.
+By default, results are removed from memory once retrieved unless you use -Keep.
+
+2. Syntax Examples
+Pipe jobs directly to Receive-Job:
+Get-Job | Receive-Job
+Retrieve results by Job ID:
+Receive-Job -Id <JobId>
+Retrieve results by Job Name:
+Receive-Job -Name "<JobName>"
+Keep results in memory for later retrieval:
+Receive-Job -Id <JobId> -Keep
+
+3. Handling Parent and Child Jobs
+If the job is a parent job with child jobs (common in remote or CIM jobs):
+Receive-Job -Id <ParentJobId> -Keep
+Receiving results from a parent job automatically includes results from all child jobs.
+
+4. Example Workflow
+# Start a remote job that generates child jobs
+$job = Invoke-Command -ComputerName LON-DC1 -ScriptBlock { Get-Service } -AsJob
+
+# Wait for the job to complete
+Wait-Job -Id $job.Id
+
+# Retrieve results and keep them in memory
+Receive-Job -Id $job.Id -Keep
+
+# Retrieve results again if needed
+Receive-Job -Id $job.Id
+
+
+
+
+
+
+get-job 
+
+$localjob = start-job -ScriptBlock {get-childitem C:\windows}
+
+get-job -id $localjob.Id
+
+Stop-Job -Id $localJob.Id
+
+ Wait for the job to complete before retrieving results
+
+Wait-Job -Id $localJob.Id
+
+Get the output from the local job
+
+Receive-Job -Id $localJob.Id
+
+Remove-Job -Id $localJob.Id
+
+
+
+
+On LON-CL1, open the Windows PowerShell ISE as Administrator.
+Enter the following command, and then select Enter: 
+	Enable-PSRemoting
+Note: An error may occur when performing Enable-PSRemoting that refers to the network connection type is set to public. If this happens, the network adapter on LON-CL1 should be disabled and then re-enabled to ensure that the connection type is set to Domain.
+Enter the following command, and then select Enter:
+	Start-Job –ScriptBlock { Dir C:\ -Recurse } –Name LocalDir
+Enter the following command, and then select Enter:
+	Invoke-Command –ScriptBlock { Get-EventLog –LogName Security –Newest 100 } –ComputerName 
+	LON-CL1,LON-DC1 –JobName RemoteLogs
+Enter the following command, and then select Enter:
+	Get-Job
+Enter the following command, and then select Enter:
+	Get-Job –Name LocalDir | Stop-Job
+
+
+
+Get-Job | Remove-Job
+Note: You might notice an error here stating that the directory name C:\Users\.....\PowerShell\ScheduledJobs is invalid. This will display if there are no defined scheduled jobs and is expected. You run the Remove-Job command here to clear the jobs before proceeding with the next steps.
+2. Enter the following command, and then select Enter:
+$trigger = New-JobTrigger –Once –At (Get-Date).AddMinutes(2)
+3. Enter the following command, and then select Enter:
+Register-ScheduledJob –Trigger $trigger –Name DemoJob –ScriptBlock { Get-EventLog –LogName Application }
+4. Enter the following command, and then select Enter:
+Get-ScheduledJob | Select –Expand JobTriggers 
+Note: Notice the Time.
+5. Enter the following command, and then select Enter:
+Get-ScheduledJob 
+6. Enter the following command, and then select Enter:
+Get-Job
+7. Enter the following command, and then select Enter:
+Receive-Job –Name DemoJob
+8. Enter the following command, and then select Enter:
+Get-Job –Name DemoJob | Remove-Job
+
+
+
+
+
+
+
